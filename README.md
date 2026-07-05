@@ -6,6 +6,8 @@
 
 It offers a lightweight and fast user experience similar to Google Keep, designed with a premium glassmorphic UI that is optimized for both desktop and mobile devices.
 
+![NEON KEEP Screenshot](static/NEONKEEP.png)
+
 ---
 
 ## 🚀 Key Features
