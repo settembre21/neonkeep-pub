@@ -1,0 +1,14 @@
+version: '3.8'
+
+services:
+  neonkeep:
+    image: ghcr.io/${GITHUB_REPOSITORY:-yourusername/neonkeep-pub}:latest
+    container_name: neonkeep
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./data:/app/data
+    environment:
+      - DATABASE_URL=sqlite:////app/data/sql_app.db
+      - JWT_SECRET=change_this_to_a_secure_random_string_in_production
+    restart: always

@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>INITIAL_SETUP // NEON KEEP</title>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Rajdhani:wght@500;700&family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/static/style.css?v=1.1">
+    <link rel="icon" type="image/jpeg" href="/static/favicon.jpg?v=1.1">
+</head>
+<body class="auth-body">
+    <div class="auth-container">
+        <div class="auth-card setup-card">
+            <h1 class="neon-title">// INITIALIZE //</h1>
+            <p class="auth-subtitle">CREATE MASTER ACCOUNT</p>
+            <p class="setup-desc">最初の管理者アカウントを作成します。ここで設定した情報で、次回よりアクセス制御の解除を行います。</p>
+
+            <form id="setup-form" class="auth-form">
+                <div class="input-group">
+                    <label for="username">MASTER_ID</label>
+                    <input type="text" id="username" required placeholder="CHOOSE MASTER USERNAME...">
+                </div>
+                <div class="input-group">
+                    <label for="password">PASS_CODE</label>
+                    <input type="password" id="password" required placeholder="CHOOSE SECURE PASSWORD...">
+                </div>
+                <div class="input-group">
+                    <label for="password-confirm">CONFIRM_PASS</label>
+                    <input type="password" id="password-confirm" required placeholder="CONFIRM SECURE PASSWORD...">
+                </div>
+                
+                <div id="error-message" class="auth-error-msg hidden">
+                    SYS_ERR: PASSWORD_MISMATCH //
+                </div>
+
+                <button type="submit" class="cyber-btn auth-btn">
+                    <span>INITIALIZE_NODE</span>
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        document.getElementById('setup-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const usernameInput = document.getElementById('username');
+            const passwordInput = document.getElementById('password');
+            const passwordConfirmInput = document.getElementById('password-confirm');
+            const errorMsg = document.getElementById('error-message');
+
+            errorMsg.classList.add('hidden');
+
+            if (passwordInput.value !== passwordConfirmInput.value) {
+                errorMsg.textContent = 'SYS_ERR: PASSWORD_MISMATCH //';
+                errorMsg.classList.remove('hidden');
+                return;
+            }
+
+            try {
+                // Register
+                const regResponse = await fetch('/auth/register', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        username: usernameInput.value,
+                        password: passwordInput.value
+                    })
+                });
+
+                if (regResponse.ok) {
+                    // Auto login after registration
+                    const loginResponse = await fetch('/auth/login', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({
+                            username: usernameInput.value,
+                            password: passwordInput.value
+                        })
+                    });
+
+                    if (loginResponse.ok) {
+                        window.location.href = '/';
+                    } else {
+                        window.location.href = '/login';
+                    }
+                } else {
+                    const data = await regResponse.json();
+                    errorMsg.textContent = `SYS_ERR: ${data.detail || 'REGISTRATION_FAILED'} //`;
+                    errorMsg.classList.remove('hidden');
+                }
+            } catch (err) {
+                errorMsg.textContent = 'SYS_ERR: OFFLINE_OR_TIMEOUT //';
+                errorMsg.classList.remove('hidden');
+            }
+        });
+    </script>
+</body>
+</html>

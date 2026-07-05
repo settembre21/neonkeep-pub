@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NEON KEEP // CYBER MEMORY</title>
+    <!-- Google Fonts for Cyberpunk feel -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Rajdhani:wght@500;700&family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/static/style.css?v=1.1">
+    <link rel="icon" type="image/jpeg" href="/static/favicon.jpg?v=1.1">
+    <!-- Sortable.js for Drag and Drop -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Sortable/1.15.2/Sortable.min.js"></script>
+</head>
+<body>
+    <div class="scanlines"></div>
+    <header>
+        <div class="header-container">
+            <h1 class="glitch" data-text="NEON KEEP">NEON KEEP</h1>
+            <div class="search-box">
+                <span class="search-icon">//_SEARCH</span>
+                <input type="text" id="search-input" placeholder="SEARCH_MEMORY...">
+            </div>
+            <button id="header-add-btn" class="cyber-btn"><span>[+] NEW_MEM</span></button>
+            <button id="header-logout-btn" class="cyber-btn secondary"><span>DISCONNECT</span></button>
+            <span class="system-status">SYS.STATUS: ONLINE // MEMORY OVERFLOW LIMIT: NONE</span>
+        </div>
+    </header>
+    <main>
+
+
+        <!-- Notes Grid -->
+        <div id="notes-grid">
+            <!-- Rendered by JS -->
+        </div>
+    </main>
+
+    <!-- Cyberpunk Dialog (Modal) for Editing -->
+    <dialog id="edit-modal" class="cyber-dialog">
+        <div class="panel-corner top-left"></div>
+        <div class="panel-corner bottom-right"></div>
+        <div class="dialog-content">
+            <h2 class="dialog-title">SYS_EDIT_NOTE //</h2>
+            <div class="input-group">
+                <label>TITLE</label>
+                <input type="text" id="edit-title">
+            </div>
+            <div class="input-group">
+                <label>CONTENT</label>
+                <textarea id="edit-content"></textarea>
+            </div>
+            <div class="input-group">
+                <label>THEME_COLOR</label>
+                <div class="color-picker" id="edit-color-picker">
+                    <!-- Dynamic color chips will be rendered here by JS -->
+                </div>
+                <input type="hidden" id="edit-color-val">
+            </div>
+            <div class="dialog-actions">
+                <button id="modal-cancel-btn" class="cyber-btn secondary"><span>CANCEL</span></button>
+                <button id="modal-save-btn" class="cyber-btn"><span>SAVE_CHANGES</span></button>
+            </div>
+        </div>
+    </dialog>
+
+    <!-- Cyberpunk Dialog (Modal) for Creating -->
+    <dialog id="create-modal" class="cyber-dialog">
+        <div class="panel-corner top-left"></div>
+        <div class="panel-corner bottom-right"></div>
+        <div class="dialog-content">
+            <h2 class="dialog-title">SYS_NEW_MEMORY //</h2>
+            <div class="input-group">
+                <label>TITLE</label>
+                <input type="text" id="create-title" placeholder="INPUT TITLE...">
+            </div>
+            <div class="input-group">
+                <label>CONTENT</label>
+                <textarea id="create-content" placeholder="TAKE A NOTE..."></textarea>
+            </div>
+            <div class="input-group">
+                <label>THEME_COLOR</label>
+                <div class="color-picker" id="create-color-picker">
+                    <!-- Dynamic color chips will be rendered here by JS -->
+                </div>
+                <input type="hidden" id="create-color-val" value="#00f0ff">
+            </div>
+            <div class="dialog-actions">
+                <button id="create-modal-cancel-btn" class="cyber-btn secondary"><span>ABORT</span></button>
+                <button id="create-modal-save-btn" class="cyber-btn"><span>CREATE_RECORD</span></button>
+            </div>
+        </div>
+    </dialog>
+
+    <script src="/static/script.js?v=1.1"></script>
+</body>
+</html>
