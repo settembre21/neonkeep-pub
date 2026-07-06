@@ -113,6 +113,7 @@ document.addEventListener('DOMContentLoaded', () => {
             card.style.setProperty('--theme-rgb', colorOption.rgb);
 
             card.innerHTML = `
+                <div class="drag-handle">⠇⠇ GRIP ⠇⠇</div>
                 <h3>${escapeHtml(note.title || 'UNTITLED //')}</h3>
                 <p>${escapeHtml(note.content)}</p>
                 <div class="note-actions">
@@ -305,8 +306,7 @@ document.addEventListener('DOMContentLoaded', () => {
         animation: 250,
         ghostClass: 'sortable-ghost',
         chosenClass: 'sortable-chosen',
-        delay: 200,             // 200ms of holding on mobile to drag
-        delayOnTouchOnly: true, // Only apply delay to mobile devices
+        handle: '.drag-handle',
         touchStartThreshold: 5, // Cancel drag if touch shifts too much (avoids accidental triggers)
         onEnd: async () => {
             const cards = notesGrid.querySelectorAll('.note-card');

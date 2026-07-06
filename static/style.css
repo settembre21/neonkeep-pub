@@ -296,14 +296,10 @@ main {
     justify-content: space-between;
     min-height: 180px;
     position: relative;
-    cursor: grab;
     transition: all 0.25s ease;
     box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3), inset 0 0 10px rgba(var(--theme-rgb), 0.05);
     backdrop-filter: blur(10px);
-}
-
-.note-card:active {
-    cursor: grabbing;
+    user-select: text; /* Explicitly allow text selection */
 }
 
 .note-card:hover {
@@ -328,6 +324,46 @@ main {
     border-color: transparent var(--theme-color, var(--neon-cyan)) transparent transparent;
 }
 
+/* Drag and Drop Handle style */
+.drag-handle {
+    position: absolute;
+    top: -15px; /* Slide-in start position */
+    left: 50%;
+    transform: translateX(-50%);
+    font-family: 'Orbitron', sans-serif;
+    font-size: 8px;
+    font-weight: 700;
+    letter-spacing: 1.5px;
+    color: var(--theme-color, var(--neon-cyan));
+    cursor: grab;
+    opacity: 0.15;
+    transition: all 0.25s ease;
+    user-select: none;
+    z-index: 10;
+    padding: 3px 8px;
+    background: #0d0f14;
+    border: 1px solid rgba(var(--theme-rgb), 0.2);
+    border-radius: 10px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.5);
+}
+
+.note-card:hover .drag-handle {
+    opacity: 0.6;
+    top: 6px; /* Slide-in to active position */
+    border-color: rgba(var(--theme-rgb), 0.4);
+}
+
+.drag-handle:hover {
+    opacity: 1 !important;
+    text-shadow: 0 0 8px var(--theme-color, var(--neon-cyan));
+    border-color: var(--theme-color, var(--neon-cyan)) !important;
+    box-shadow: 0 0 10px rgba(var(--theme-rgb), 0.3);
+}
+
+.drag-handle:active {
+    cursor: grabbing;
+}
+
 .note-card h3 {
     font-family: 'Rajdhani', sans-serif;
     font-size: 20px;
@@ -336,6 +372,7 @@ main {
     color: #fff;
     text-shadow: 0 0 8px rgba(var(--theme-rgb), 0.5);
     word-break: break-all;
+    user-select: text; /* Explicitly allow text selection */
 }
 
 .note-card p {
@@ -346,6 +383,7 @@ main {
     white-space: pre-wrap;
     word-break: break-all;
     flex-grow: 1;
+    user-select: text; /* Explicitly allow text selection */
     
     /* Scroll limit on long text */
     max-height: 150px;
