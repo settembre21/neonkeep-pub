@@ -5,7 +5,7 @@ services:
     image: ghcr.io/${GITHUB_REPOSITORY:-settembre21/neonkeep-pub}:latest
     container_name: neonkeep
     ports:
-      - "8000:8000"
+      - "${NEONKEEP_PORT:-8000}:8000"
     volumes:
       - ./data:/app/data
     environment:
