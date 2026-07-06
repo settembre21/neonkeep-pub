@@ -17,6 +17,7 @@ app.mount("/static", StaticFiles(directory="static"), name="static")
 templates = Jinja2Templates(directory="templates")
 
 # Dependency to get DB session
+# Dependency to get DB session
 def get_db():
     db = SessionLocal()
     try:
@@ -24,9 +25,28 @@ def get_db():
     finally:
         db.close()
 
+import os
+# Read DISABLE_AUTH environment flag (defaults to false for secure standalone use)
+DISABLE_AUTH = os.getenv("DISABLE_AUTH", "false").lower() == "true"
+
+# Active user resolver (auto-registers 'local_user' if auth is disabled)
+def get_active_user_id(request: Request, db: Session = Depends(get_db)):
+    if DISABLE_AUTH:
+        local_user = db.query(models.User).filter(models.User.username == "local_user").first()
+        if not local_user:
+            local_user = models.User(username="local_user", hashed_password="disabled_auth_dummy_hash")
+            db.add(local_user)
+            db.commit()
+            db.refresh(local_user)
+        return local_user.id
+    return auth.get_current_user_id(request)
+
 # Page Routing
 @app.get("/", response_class=HTMLResponse)
 def read_root(request: Request, db: Session = Depends(get_db)):
+    if DISABLE_AUTH:
+        return templates.TemplateResponse(request=request, name="index.html", context={"disable_auth": True})
+    
     # Check if any user exists in the database
     users_count = db.query(models.User).count()
     if users_count == 0:
@@ -36,13 +56,16 @@ def read_root(request: Request, db: Session = Depends(get_db)):
     try:
         auth.get_current_user_id(request)
         # Authenticated: render main kept notes board
-        return templates.TemplateResponse(request=request, name="index.html")
+        return templates.TemplateResponse(request=request, name="index.html", context={"disable_auth": False})
     except HTTPException:
         # Not authenticated: redirect to login page
         return RedirectResponse(url="/login", status_code=status.HTTP_303_SEE_OTHER)
 
 @app.get("/login", response_class=HTMLResponse)
 def get_login_page(request: Request, db: Session = Depends(get_db)):
+    if DISABLE_AUTH:
+        return RedirectResponse(url="/", status_code=status.HTTP_303_SEE_OTHER)
+    
     # If no users exist, force redirect to setup
     if db.query(models.User).count() == 0:
         return RedirectResponse(url="/setup", status_code=status.HTTP_303_SEE_OTHER)
@@ -56,6 +79,9 @@ def get_login_page(request: Request, db: Session = Depends(get_db)):
 
 @app.get("/setup", response_class=HTMLResponse)
 def get_setup_page(request: Request, db: Session = Depends(get_db)):
+    if DISABLE_AUTH:
+        return RedirectResponse(url="/", status_code=status.HTTP_303_SEE_OTHER)
+    
     # Setup only allowed if zero users exist in system
     if db.query(models.User).count() > 0:
         return RedirectResponse(url="/login", status_code=status.HTTP_303_SEE_OTHER)
@@ -111,7 +137,7 @@ def logout(response: Response):
 def get_notes(
     request: Request,
     db: Session = Depends(get_db),
-    user_id: int = Depends(auth.get_current_user_id)
+    user_id: int = Depends(get_active_user_id)
 ):
     return db.query(models.Note).filter(models.Note.user_id == user_id).order_by(models.Note.position.asc()).all()
 
@@ -119,7 +145,7 @@ def get_notes(
 def create_note(
     note: schemas.NoteCreate,
     db: Session = Depends(get_db),
-    user_id: int = Depends(auth.get_current_user_id)
+    user_id: int = Depends(get_active_user_id)
 ):
     # Set position to end of list
     last_note = db.query(models.Note).filter(models.Note.user_id == user_id).order_by(models.Note.position.desc()).first()
@@ -141,7 +167,7 @@ def create_note(
 def reorder_notes(
     items: List[schemas.NoteReorder],
     db: Session = Depends(get_db),
-    user_id: int = Depends(auth.get_current_user_id)
+    user_id: int = Depends(get_active_user_id)
 ):
     # Update positions of user's notes
     for item in items:
@@ -159,7 +185,7 @@ def update_note(
     note_id: int,
     note: schemas.NoteCreate,
     db: Session = Depends(get_db),
-    user_id: int = Depends(auth.get_current_user_id)
+    user_id: int = Depends(get_active_user_id)
 ):
     db_note = db.query(models.Note).filter(
         models.Note.id == note_id,
@@ -182,7 +208,7 @@ def update_note(
 def delete_note(
     note_id: int,
     db: Session = Depends(get_db),
-    user_id: int = Depends(auth.get_current_user_id)
+    user_id: int = Depends(get_active_user_id)
 ):
     db_note = db.query(models.Note).filter(
         models.Note.id == note_id,

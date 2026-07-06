@@ -23,7 +23,9 @@
                 <input type="text" id="search-input" placeholder="SEARCH_MEMORY...">
             </div>
             <button id="header-add-btn" class="cyber-btn"><span>[+] NEW_MEM</span></button>
+            {% if not disable_auth %}
             <button id="header-logout-btn" class="cyber-btn secondary"><span>DISCONNECT</span></button>
+            {% endif %}
             <span class="system-status">SYS.STATUS: ONLINE // MEMORY OVERFLOW LIMIT: NONE</span>
         </div>
     </header>
