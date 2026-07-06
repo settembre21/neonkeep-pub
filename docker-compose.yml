@@ -2,7 +2,7 @@ version: '3.8'
 
 services:
   neonkeep:
-    image: ghcr.io/${GITHUB_REPOSITORY:-yourusername/neonkeep-pub}:latest
+    image: ghcr.io/${GITHUB_REPOSITORY:-settembre21/neonkeep-pub}:latest
     container_name: neonkeep
     ports:
       - "8000:8000"

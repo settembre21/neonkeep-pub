@@ -35,7 +35,7 @@ version: '3.8'
 
 services:
   neonkeep:
-    image: ghcr.io/yourusername/neonkeep-pub:latest  # Replace with your built image name
+    image: ghcr.io/settembre21/neonkeep-pub:latest  # Replace with your built image name
     container_name: neonkeep
     ports:
       - "8000:8000"
@@ -63,7 +63,7 @@ If you wish to run and modify NEON KEEP locally using Python and `uv`:
 
 ### 1. Set Up Dependencies
 ```bash
-git clone https://github.com/yourusername/neonkeep-pub.git
+git clone https://github.com/settembre21/neonkeep-pub.git
 cd neonkeep-pub
 uv sync
 ```
